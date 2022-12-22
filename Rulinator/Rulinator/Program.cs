@@ -1,11 +1,12 @@
 ﻿using CommandLine;
-using System.Net.WebSockets;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Rulinator
 {
     internal class Program
     {
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(Options))]
         static void Main(string[] args)
         {
             //Parse command line 
