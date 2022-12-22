@@ -1,5 +1,5 @@
 # rulinator
-Create Hashcat rule files from wordlists
+Create Hashcat rule files from wordlists. Each word in the file supplied is converted to an append rule and prepend rule.
 
 ## License
 Rulinator is licensed under the MIT license. Refer to [license.txt](https://github.com/metacrackorg/metacrack/blob/main/LICENSE) for more information.
