@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Rulinator": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\Administrator\\Downloads\\places.txt"
+    }
+  }
+}
