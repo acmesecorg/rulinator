@@ -1,4 +1,4 @@
-# rulinator
+# *rulinator*
 Create Hashcat rule files from wordlists, integers or dates. Each word in the file supplied is converted to an append rule or optionally prepend rule.
 
 For example, the word `acmesec` is turned into the append rule `$a$c$m$e$s$e$c` or optionally the prepend rule `^c^e^s^e^m^c^a`
