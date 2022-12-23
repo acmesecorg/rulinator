@@ -22,3 +22,6 @@ Create *words.prepend.rule* prepend rule file from a file of words<br>
 `rulinator words.txt --prepend`
 
 Use the `-p` or `--passthough` option to include a passthough `:` rule at the top of the output file.
+
+To generate a rule file that appends or prepends a range of integers to an attack, use the `--integer-end` and optionally `--integer-start` parameters <br>
+`rulinator --integer-end 999 -p`
