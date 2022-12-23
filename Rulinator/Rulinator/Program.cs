@@ -1,5 +1,7 @@
 ﻿using CommandLine;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Tracing;
+using System.Reflection.PortableExecutable;
 using System.Text;
 
 namespace Rulinator
@@ -19,36 +21,44 @@ namespace Rulinator
                 return;
             }
 
-            //Validate the file paths
-            if (string.IsNullOrEmpty(options.FilePath))
-            {
-                ConsoleUtil.WriteError("A file path must be supplied");
-                return;
-            }
-
             //Check file exists
             var currentDirectory = Directory.GetCurrentDirectory();
             var mergedPath = Path.Combine(currentDirectory, options.FilePath);
-            if (!System.IO.File.Exists(mergedPath))
+            var hasInput = File.Exists(mergedPath);
+            var hasIntegers = options.IntegerEnd > options.IntegerStart;
+            var isAppend = !options.Prepend;
+            var isPrepend = options.Prepend;
+            var finalName = "";
+            var fileLength = 0L;
+
+            //Determine if we need to do anything
+            if (!hasInput && !hasIntegers) return;
+
+            //Get file details
+            if (hasInput)
             {
-                ConsoleUtil.WriteError($"File {mergedPath} not found");
-                return;
+                var fileInfo = new FileInfo(mergedPath);
+                finalName = fileInfo.Name.Replace(fileInfo.Extension, "");
+                fileLength = fileInfo.Length;
+            }
+            else
+            {
+                finalName = "rulinator";
+                if (hasIntegers) finalName = "integer";
             }
 
-            var fileInfo = new FileInfo(mergedPath);
-            var finalName = fileInfo.Name.Replace(fileInfo.Extension, "");
             var appendName = $"{finalName}.append.rule";
             var prependName = $"{finalName}.prepend.rule";
             var appendPath = Path.Combine(currentDirectory, appendName);
             var prependPath = Path.Combine(currentDirectory, prependName);
 
             //Check if paths exist
-            if (File.Exists(appendPath))
+            if (File.Exists(appendPath) && isAppend)
             {
                 ConsoleUtil.WriteError($"File {appendName} already exists.");
                 return;
             }
-            if (File.Exists(prependPath))
+            if (File.Exists(prependPath) && isPrepend)
             {
                 ConsoleUtil.WriteError($"File {prependName} already exists.");
                 return;
@@ -58,47 +68,63 @@ namespace Rulinator
             var prepends = new List<string>();
 
             //First pass, write out lines
-            using var reader = new StreamReader(mergedPath);
-            var count = 0;
-
-            while (!reader.EndOfStream)
+            if (hasInput)
             {
-                var word = reader.ReadLine();
+                using var reader = new StreamReader(mergedPath);
+                var count = 0;
 
-                if (word == null) continue;
-
-                var append = new StringBuilder();
-                var prepend = new StringBuilder();
-
-                foreach (var c in word)
+                while (!reader.EndOfStream)
                 {
-                    append.Append('$');
-                    append.Append(c);
+                    var word = reader.ReadLine();
+                    if (word == null) continue;
+
+                    if (isAppend) appends.Add(Map(word, '$'));
+                    if (isPrepend) prepends.Add(Map(word.Reverse(), '^'));
+                    
+                    count++;
+
+                    if (count % 100 == 0) ConsoleUtil.WriteProgress("Processing file", reader.BaseStream.Position, fileLength);
                 }
-
-                var reversed = word.Reverse();
-
-                foreach (var c in reversed)
-                {
-                    prepend.Append('^');
-                    prepend.Append(c);
-                }
-
-                appends.Add(append.ToString());
-                prepends.Add(prepend.ToString());
-
-                count++;
-
-                if (count % 100 == 0) ConsoleUtil.WriteProgress("Processing", reader.BaseStream.Position, fileInfo.Length);
             }
 
+            //Write out integers
+            if (hasIntegers)
+            {
+                for (var i = options.IntegerStart; i<= options.IntegerEnd; i++)
+                {
+                    var word = i.ToString();
 
+                    if (isAppend) appends.Add(Map(word, '$'));
+                    if (isPrepend) prepends.Add(Map(word.Reverse(), '^'));
 
-            File.AppendAllLines(appendPath, appends);
-            File.AppendAllLines(prependPath, prepends);
+                    if (i % 100 == 0) ConsoleUtil.WriteProgress("Processing integers", options.IntegerEnd - i, options.IntegerEnd - options.IntegerStart);
+                }
+            }
 
-            ConsoleUtil.WriteMessage($"Wrote {appends.Count} lines to {appendName}");
-            ConsoleUtil.WriteMessage($"Wrote {prepends.Count} lines to {prependName}");
+            if (appends.Count > 0)
+            {
+                File.AppendAllLines(appendPath, appends, Encoding.UTF8);
+                ConsoleUtil.WriteMessage($"Wrote {appends.Count} lines to {appendName}");
+            }
+
+            if (prepends.Count > 0)
+            {
+                ConsoleUtil.WriteMessage($"Wrote {prepends.Count} lines to {prependName}");
+                File.AppendAllLines(prependPath, prepends, Encoding.UTF8);
+            }
+        }
+
+        static string Map(IEnumerable<char> word, char d)
+        {
+            var result = new StringBuilder();
+
+            foreach (var c in word)
+            {
+                result.Append(d);
+                result.Append(c);
+            }
+
+            return result.ToString();
         }
     }
 }

@@ -1,8 +1,20 @@
 {
   "profiles": {
-    "Rulinator": {
+    "Integers": {
+      "commandName": "Project",
+      "commandLineArgs": "--int-end 9999"
+    },
+    "File": {
       "commandName": "Project",
       "commandLineArgs": "C:\\Users\\Administrator\\Downloads\\places.txt"
+    },
+    "File prepend": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Users\\Administrator\\Downloads\\places.txt --prepend"
+    },
+    "Integers prepend": {
+      "commandName": "Project",
+      "commandLineArgs": "--int-end 9999 --prepend"
     }
   }
 }
