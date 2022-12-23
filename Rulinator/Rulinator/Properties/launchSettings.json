@@ -6,11 +6,11 @@
     },
     "File": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\Administrator\\Downloads\\places.txt"
+      "commandLineArgs": "C:\\Users\\Administrator\\Downloads\\places.txt -p"
     },
     "File prepend": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\Administrator\\Downloads\\places.txt --prepend"
+      "commandLineArgs": "C:\\Users\\Administrator\\Downloads\\places.txt --prepend --passthrough"
     },
     "Integers prepend": {
       "commandName": "Project",

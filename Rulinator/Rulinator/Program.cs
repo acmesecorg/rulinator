@@ -103,12 +103,16 @@ namespace Rulinator
 
             if (appends.Count > 0)
             {
+                if (options.Passthrough) appends.Insert(0, ":");
+
                 File.AppendAllLines(appendPath, appends, Encoding.UTF8);
                 ConsoleUtil.WriteMessage($"Wrote {appends.Count} lines to {appendName}");
             }
 
             if (prepends.Count > 0)
             {
+                if (options.Passthrough) prepends.Insert(0, ":");
+
                 ConsoleUtil.WriteMessage($"Wrote {prepends.Count} lines to {prependName}");
                 File.AppendAllLines(prependPath, prepends, Encoding.UTF8);
             }

@@ -20,5 +20,8 @@ namespace Rulinator
 
         [Option("prepend", HelpText = "Create prepend instead of append rules")]
         public bool Prepend { get; set; }
+
+        [Option('p', "passthrough", HelpText = "Include a passthrough rule (:) at the beginning of the file")]
+        public bool Passthrough { get; set; }
     }
 }
