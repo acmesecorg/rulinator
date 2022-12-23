@@ -1,5 +1,7 @@
 # rulinator
-Create Hashcat rule files from wordlists. Each word in the file supplied is converted to an append rule and prepend rule.
+Create Hashcat rule files from wordlists, integers or dates. Each word in the file supplied is converted to an append rule or optionally prepend rule.
+
+For example, the word `acmesec` is turned into the append rule `$a$c$m$e$s$e$c` or optionally the prepend rule `^c^e^s^e^m^c^a`
 
 ## License
 Rulinator is licensed under the MIT license. Refer to [license.txt](https://github.com/metacrackorg/metacrack/blob/main/LICENSE) for more information.
@@ -13,4 +15,8 @@ Rulinator is licensed under the MIT license. Refer to [license.txt](https://gith
   
 ## Usage
 
+Create *words.append.rule* append rule file from a file of words<br>
 `rulinator words.txt`
+
+Create *words.prepend.rule* prepend rule file from a file of words<br>
+`rulinator words.txt --prepend`
