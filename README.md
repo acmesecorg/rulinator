@@ -20,3 +20,5 @@ Create *words.append.rule* append rule file from a file of words<br>
 
 Create *words.prepend.rule* prepend rule file from a file of words<br>
 `rulinator words.txt --prepend`
+
+Use the `-p` or `--passthough` option to include a passthough `:` rule at the top of the output file.
